@@ -28,11 +28,19 @@ export interface NavItem {
   href: string;
 }
 
+/** Homepage section ids — the navbar anchors and the sections share these. */
+export const sectionIds = {
+  hero: "hero",
+  academicHub: "academic-hub",
+  misClub: "mis-club",
+  projects: "projects",
+} as const;
+
 /** Primary navigation — one entry per half of the platform, plus projects. */
 export const mainNav: NavItem[] = [
-  { label: "Academic Hub", href: "/#academic" },
-  { label: "MIS Club", href: "/#club" },
-  { label: "Projects", href: "/projects" },
+  { label: "Academic Hub", href: `/#${sectionIds.academicHub}` },
+  { label: "MIS Club", href: `/#${sectionIds.misClub}` },
+  { label: "Projects", href: `/#${sectionIds.projects}` },
 ];
 
 /** The call-to-action at the end of the navbar. */
@@ -65,7 +73,7 @@ export const footerColumns: FooterColumn[] = [
   {
     heading: "Build",
     links: [
-      { label: "Tech Projects", href: "/projects" },
+      { label: "Tech Projects", href: `/#${sectionIds.projects}` },
       { label: "Source on GitHub", href: siteConfig.links.githubRepo, external: true },
       { label: "PMU Website", href: siteConfig.links.university, external: true },
     ],
