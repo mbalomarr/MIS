@@ -65,8 +65,8 @@ export function JoinForm() {
     return (
       <div role="status" className="rounded-panel bg-white p-8 text-center shadow-float sm:p-10">
         <CheckCircle2 size={48} className="mx-auto mb-4 text-success" aria-hidden="true" />
-        <h2 className="mb-2 text-2xl text-ink-800">Welcome to the MIS Club</h2>
-        <p className="mb-6 text-ink-400">{successMessage}</p>
+        <h2 className="mb-2 text-2xl text-ink-800">Welcome to the MIS Hub!</h2>
+        <p className="mb-6 text-ink-400">Your Digital ID is being generated.</p>
         <button
           type="button"
           onClick={() => setSuccessMessage(null)}
