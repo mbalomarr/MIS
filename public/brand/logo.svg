@@ -1,0 +1,145 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 120" width="340" height="120"
+     role="img" aria-labelledby="logoTitle logoDesc">
+  <title id="logoTitle">MIS Club — PMU</title>
+  <desc id="logoDesc">Animated hexagonal node network with the MIS Club wordmark.</desc>
+
+  <!-- =====================================================================
+       MIS CLUB — PMU  |  animated logo  (dark ink — for light backgrounds)
+       Geometry matches the static brand kit in assets/brand/ exactly;
+       only motion has been added. Ink: #0F1E33   Accent: #2FB8C6
+
+       The animation is pure CSS inside the file, so it plays wherever the
+       SVG is used — including inside an <img> tag — with no JavaScript.
+       ===================================================================== -->
+
+  <style>
+    /* --- Timing ------------------------------------------------------- */
+    /*  beat  = 2.4s  the network's heartbeat (nodes, core, spokes)
+        trace = 4.0s  one lap of the pulse around the hexagon
+        spin  = 24s   the outer ring, matching the brand kit's slow spin   */
+
+    .ring, .trace, .spark, .node, .core-halo, .core, .minor, .descriptor {
+      transform-box: view-box;
+    }
+
+    /* --- Outer ring: one slow rotation --------------------------------- */
+    .ring {
+      transform-origin: 60px 60px;
+      animation: spin 24s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* --- Pulse travelling around the hexagon edges --------------------- */
+    .trace { animation: trace 4s linear infinite; }
+    @keyframes trace { to { stroke-dashoffset: -100; } }
+
+    /* --- Energy running down each spoke into the core ------------------ */
+    .spark { animation: spark 2.4s ease-in-out infinite; }
+    .spark--b { animation-delay: 0.35s; }
+    .spark--c { animation-delay: 0.7s; }
+    @keyframes spark {
+      0%        { stroke-dashoffset: 0;    opacity: 0; }
+      12%       { opacity: 1; }
+      60%, 100% { stroke-dashoffset: -100; opacity: 0; }
+    }
+
+    /* --- The three accent nodes breathing in sequence ------------------ */
+    .node { animation: breathe 2.4s ease-in-out infinite; }
+    .node--a { transform-origin: 60px 22px; }
+    .node--b { transform-origin: 93px 79px; animation-delay: 0.35s; }
+    .node--c { transform-origin: 27px 79px; animation-delay: 0.7s; }
+    @keyframes breathe {
+      0%, 100% { transform: scale(1);    opacity: 0.85; }
+      50%      { transform: scale(1.22); opacity: 1; }
+    }
+
+    /* --- Core: a soft beat, with a halo expanding out of it ------------ */
+    .core {
+      transform-origin: 60px 60px;
+      animation: beat 2.4s ease-in-out infinite;
+    }
+    @keyframes beat {
+      0%, 100% { transform: scale(1); }
+      45%      { transform: scale(1.12); }
+    }
+
+    .core-halo {
+      transform-origin: 60px 60px;
+      animation: halo 2.4s ease-out infinite;
+    }
+    @keyframes halo {
+      0%   { transform: scale(1);   opacity: 0.55; }
+      70%  { transform: scale(2.4); opacity: 0; }
+      100% { transform: scale(2.4); opacity: 0; }
+    }
+
+    /* --- Secondary nodes: a quiet shimmer, off the main beat ----------- */
+    .minor { animation: shimmer 4.8s ease-in-out infinite; }
+    .minor--b { animation-delay: 1.6s; }
+    .minor--c { animation-delay: 3.2s; }
+    @keyframes shimmer {
+      0%, 100% { opacity: 0.45; }
+      50%      { opacity: 1; }
+    }
+
+    /* --- Descriptor line under the wordmark ---------------------------- */
+    .descriptor { animation: settle 4.8s ease-in-out infinite; }
+    @keyframes settle {
+      0%, 100% { opacity: 0.7; }
+      50%      { opacity: 1; }
+    }
+
+    /* --- Anyone who asked their system for less motion gets none ------- */
+    @media (prefers-reduced-motion: reduce) {
+      .ring, .trace, .spark, .node, .core, .core-halo, .minor, .descriptor {
+        animation: none;
+      }
+      .trace, .spark { opacity: 0; }
+    }
+  </style>
+
+  <!-- ================= DECORATIVE OUTER RING ================= -->
+  <circle class="ring" cx="60" cy="60" r="45" fill="none"
+          stroke="#2FB8C6" stroke-width="1.5" stroke-linecap="round"
+          stroke-dasharray="3 12" opacity="0.5"></circle>
+
+  <!-- ================= HEXAGON & SPOKES (static base) ================= -->
+  <g fill="none" stroke="#0F1E33" stroke-width="4" stroke-linejoin="round">
+    <path d="M60 22 L93 41 L93 79 L60 98 L27 79 L27 41 Z"></path>
+    <path d="M60 22 L60 60 M93 79 L60 60 M27 79 L60 60"></path>
+  </g>
+
+  <!-- ================= TRAVELLING EDGE PULSE ================= -->
+  <path class="trace" d="M60 22 L93 41 L93 79 L60 98 L27 79 L27 41 Z"
+        pathLength="100" fill="none" stroke="#2FB8C6" stroke-width="4"
+        stroke-linecap="round" stroke-dasharray="14 86"></path>
+
+  <!-- ================= SPOKE SPARKS ================= -->
+  <g fill="none" stroke="#2FB8C6" stroke-width="4" stroke-linecap="round">
+    <path class="spark"          d="M60 22 L60 60" pathLength="100" stroke-dasharray="30 70"></path>
+    <path class="spark spark--b" d="M93 79 L60 60" pathLength="100" stroke-dasharray="30 70"></path>
+    <path class="spark spark--c" d="M27 79 L60 60" pathLength="100" stroke-dasharray="30 70"></path>
+  </g>
+
+  <!-- ================= CORE ================= -->
+  <circle class="core-halo" cx="60" cy="60" r="9" fill="none" stroke="#2FB8C6" stroke-width="2.5"></circle>
+  <circle class="core" cx="60" cy="60" r="9" fill="#0F1E33"></circle>
+
+  <!-- ================= NODES ================= -->
+  <g fill="#2FB8C6">
+    <circle class="node node--a" cx="60" cy="22" r="7"></circle>
+    <circle class="node node--b" cx="93" cy="79" r="7"></circle>
+    <circle class="node node--c" cx="27" cy="79" r="7"></circle>
+  </g>
+  <g fill="#0F1E33">
+    <circle class="minor"          cx="93" cy="41" r="5.5"></circle>
+    <circle class="minor minor--b" cx="27" cy="41" r="5.5"></circle>
+    <circle class="minor minor--c" cx="60" cy="98" r="5.5"></circle>
+  </g>
+
+  <!-- ================= WORDMARK ================= -->
+  <text x="128" y="58" fill="#0F1E33" font-family="Space Grotesk, Helvetica Neue, Helvetica, Arial, sans-serif"
+        font-size="42" font-weight="700" letter-spacing="1">MIS</text>
+  <text class="descriptor" x="129" y="86" fill="#2FB8C6" font-family="Space Grotesk, Helvetica Neue, Helvetica, Arial, sans-serif"
+        font-size="17" font-weight="500" letter-spacing="4.5">CLUB · PMU</text>
+</svg>
