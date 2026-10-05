@@ -1,0 +1,97 @@
+// PMU MIS Hub — database schema
+// Dual-purpose platform: MIS major (academic hub) + MIS Club (members, events, QR attendance, projects).
+
+generator client {
+  provider = "prisma-client"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+/// Site permissions. Admins manage events and scan attendance; members register and check in.
+enum Role {
+  ADMIN
+  MEMBER
+}
+
+/// Mirrors the event types used on the site (bootcamp, tech talk, competition / hackathon).
+enum EventType {
+  BOOTCAMP
+  TALK
+  COMPETITION
+}
+
+/// A registered club member (or admin).
+model User {
+  id           String   @id @default(cuid())
+  /// PMU student ID, 9–10 digits
+  pmuId        String   @unique
+  fullName     String
+  /// PMU email address (@pmu.edu.sa)
+  email        String   @unique
+  major        String
+  githubHandle String?
+  role         Role     @default(MEMBER)
+  /// Hash of the member's personal QR secret, used by the smart attendance system
+  qrCodeHash   String   @unique
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  attendances Attendance[]
+  projects    Project[]
+
+  @@map("users")
+}
+
+/// A club event: workshop, tech talk or competition.
+model Event {
+  id       String    @id @default(cuid())
+  title    String
+  date     DateTime
+  location String
+  type     EventType
+  /// Maximum attendees; null means open attendance
+  capacity Int?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  attendances Attendance[]
+
+  @@index([date])
+  @@map("events")
+}
+
+/// Junction table: one row per member checked in to an event via QR scan.
+model Attendance {
+  id        String   @id @default(cuid())
+  userId    String
+  eventId   String
+  scannedAt DateTime @default(now())
+
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  /// A member can only be checked in to an event once
+  @@unique([userId, eventId])
+  @@index([eventId])
+  @@map("attendances")
+}
+
+/// A student or club project hosted on GitHub.
+model Project {
+  id       String @id @default(cuid())
+  title    String
+  repoUrl  String @unique
+  authorId String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  author User @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  @@index([authorId])
+  @@map("projects")
+}
