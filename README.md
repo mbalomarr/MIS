@@ -16,7 +16,9 @@ The hub for the Management Information Systems major at Prince Mohammad Bin Fahd
 | `Content/SiteContent.cs` | Site settings and homepage copy |
 | `Views/` | Razor views; homepage sections are partials in `Views/Home/Sections/` |
 | `Migrations/` | EF Core migrations |
-| `Database/InitialCreate.sql` | Idempotent SQL script for creating the schema by hand |
+| `Database/MonsterAspMigration.sql` | Idempotent SQL script for creating the schema in Monster ASP |
+| `publish.sh` / `publish.bat` | Build the Release package into `publish/` |
+| `appsettings.Production.template.json` | Template for the git-ignored `appsettings.Production.json` |
 
 ## Run locally
 
@@ -32,13 +34,14 @@ dotnet run
 
 ## Deploy to Monster ASP
 
-1. Create a SQL Server database in the Monster ASP control panel and note its server, database name, user and password.
-2. Create the schema: either run `Database/InitialCreate.sql` in the panel's SQL tool, or run `dotnet ef database update --connection "<connection string>"` from your machine.
-3. Copy `appsettings.Production.json.example` to `appsettings.Production.json` and fill in the connection string (this file is git-ignored).
-4. Publish: `dotnet publish -c Release -o publish`, then upload the contents of `publish/` (including `web.config` and `appsettings.Production.json`) via FTP or Web Deploy.
+1. **Database:** create a SQL Server database in the Monster ASP control panel and note its server, database name, user and password.
+2. **Schema:** open the panel's SQL query tool, paste the whole of `Database/MonsterAspMigration.sql` and run it once. It is safe to run again later.
+3. **Settings:** copy `appsettings.Production.template.json` to `appsettings.Production.json` (git-ignored) and fill in the connection string.
+4. **Package:** run `./publish.sh` (macOS/Linux) or `publish.bat` (Windows). It warns if the production settings still contain placeholders.
+5. **Upload:** copy the contents of `publish/` into the site root via FTP or Web Deploy.
 
-Regenerate the SQL script after adding a migration:
+After adding a migration, regenerate the SQL script (then remove the `GO` lines, or keep them if you only use SSMS):
 
 ```bash
-dotnet ef migrations script --idempotent -o Database/InitialCreate.sql
+dotnet ef migrations script --idempotent -o Database/MonsterAspMigration.sql
 ```

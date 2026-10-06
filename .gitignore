@@ -490,3 +490,6 @@ appsettings.Production.json
 
 # macOS
 .DS_Store
+
+# Publish output
+publish/
