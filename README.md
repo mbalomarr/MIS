@@ -1,36 +1,44 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# PMU MIS Hub
 
-## Getting Started
+The hub for the Management Information Systems major at Prince Mohammad Bin Fahd University and the official website of the MIS Club.
 
-First, run the development server:
+**Stack:** ASP.NET Core 8 MVC · Entity Framework Core 8 · SQL Server · Razor views with Tailwind CSS (browser build) and Lucide icons · hosted on Monster ASP (IIS).
+
+## Project layout
+
+| Path | What lives there |
+|---|---|
+| `Controllers/HomeController.cs` | Homepage, `/join` (GET/POST) and the Digital ID at `/id/{id}` |
+| `Services/RegistrationService.cs` | Saves members; enforces unique PMU ID and email |
+| `Data/AppDbContext.cs` | EF Core model: tables, relationships, unique indexes |
+| `Models/Entities/` | `User`, `Event`, `Attendance`, `Project` |
+| `Models/ViewModels/` | Form and page models (validation rules are DataAnnotations here) |
+| `Content/SiteContent.cs` | Site settings and homepage copy |
+| `Views/` | Razor views; homepage sections are partials in `Views/Home/Sections/` |
+| `Migrations/` | EF Core migrations |
+| `Database/InitialCreate.sql` | Idempotent SQL script for creating the schema by hand |
+
+## Run locally
+
+Requires the .NET 8 SDK and a SQL Server (on macOS, run SQL Server in Docker).
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+dotnet user-secrets init
+dotnet user-secrets set "ConnectionStrings:DefaultConnection" "Server=localhost,1433;Database=PmuMisHub_Dev;User Id=sa;Password=<your-password>;TrustServerCertificate=True;MultipleActiveResultSets=True"
+dotnet tool restore
+dotnet ef database update
+dotnet run
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Deploy to Monster ASP
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. Create a SQL Server database in the Monster ASP control panel and note its server, database name, user and password.
+2. Create the schema: either run `Database/InitialCreate.sql` in the panel's SQL tool, or run `dotnet ef database update --connection "<connection string>"` from your machine.
+3. Copy `appsettings.Production.json.example` to `appsettings.Production.json` and fill in the connection string (this file is git-ignored).
+4. Publish: `dotnet publish -c Release -o publish`, then upload the contents of `publish/` (including `web.config` and `appsettings.Production.json`) via FTP or Web Deploy.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Regenerate the SQL script after adding a migration:
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+dotnet ef migrations script --idempotent -o Database/InitialCreate.sql
+```

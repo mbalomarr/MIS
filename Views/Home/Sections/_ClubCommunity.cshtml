@@ -1,0 +1,68 @@
+@using System.Globalization
+@{
+    var today = DateOnly.FromDateTime(DateTime.UtcNow);
+    // Upcoming events first (soonest first), then past ones (most recent first).
+    var ordered = SiteContent.Events
+        .OrderBy(e => e.Date < today)
+        .ThenBy(e => e.Date < today ? -e.Date.DayNumber : e.Date.DayNumber)
+        .ToList();
+    string BadgeClass(EventType type) => type switch
+    {
+        EventType.Bootcamp => "bg-signal-100 text-signal-700",
+        EventType.Talk => "bg-[#e7ecf3] text-ink-600",
+        _ => "bg-[#ffe9d6] text-[#a15a16]",
+    };
+}
+<section id="mis-club" aria-labelledby="mis-club-title" class="bg-white py-16 sm:py-24">
+    <div class="container-site">
+        <header class="mb-12 flex flex-wrap items-end justify-between gap-6 lg:mb-16">
+            <div class="max-w-3xl">
+                <p class="mb-3 text-sm font-medium tracking-[0.18em] text-signal-700 uppercase">The MIS Club</p>
+                <h2 id="mis-club-title" class="text-3xl sm:text-4xl lg:text-[2.5rem]">Workshops, talks and hackathons — run by students, for every major.</h2>
+                <p class="mt-4 text-[1.0625rem] text-ink-400">
+                    The MIS Club turns the major into practice. Membership is free and open to every student on campus;
+                    members get priority seats at every session.
+                </p>
+            </div>
+            <a href="/join" class="inline-flex shrink-0 items-center rounded-full bg-signal-500 px-6 py-3 text-sm font-semibold text-ink-900 transition hover:-translate-y-0.5 hover:shadow-glow">Join the Club</a>
+        </header>
+
+        <h3 class="mb-6 text-xl">Activities</h3>
+        <ul class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            @foreach (var evt in ordered)
+            {
+                var isPast = evt.Date < today;
+                <li>
+                    <article class="flex h-full flex-col rounded-card border border-paper-200 bg-white p-6 shadow-hairline transition duration-300 @(isPast ? "opacity-75" : "hover:-translate-y-1 hover:border-signal-300 hover:shadow-lift")">
+                        <div class="mb-5 flex items-start justify-between gap-4">
+                            <time datetime="@evt.Date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)" class="grid size-[68px] shrink-0 place-content-center rounded-lg text-center text-white @(isPast ? "bg-ink-400" : "bg-ink-800")">
+                                <span class="text-2xl leading-none font-bold tabular-nums">@evt.Date.ToString("dd", CultureInfo.InvariantCulture)</span>
+                                <span class="text-xs tracking-[0.14em] text-signal-300 uppercase">@evt.Date.ToString("MMM", CultureInfo.InvariantCulture)</span>
+                            </time>
+                            <div class="flex flex-wrap justify-end gap-2">
+                                <span class="rounded-full px-2.5 py-1 text-xs font-semibold tracking-[0.06em] uppercase @BadgeClass(evt.Type)">@SiteContent.EventLabel(evt.Type)</span>
+                                @if (isPast)
+                                {
+                                    <span class="rounded-full bg-paper-200 px-2.5 py-1 text-xs font-semibold tracking-[0.06em] text-ink-600 uppercase">Past</span>
+                                }
+                            </div>
+                        </div>
+                        <h4 class="mb-2 text-lg">@evt.Title</h4>
+                        <p class="mb-5 flex-1 text-sm text-ink-400">@evt.Description</p>
+                        <ul class="mb-6 grid gap-2 text-xs text-ink-400">
+                            <li class="flex items-center gap-2"><i data-lucide="map-pin" class="size-3.5 shrink-0 text-signal-700" aria-hidden="true"></i>@evt.Location</li>
+                            <li class="flex items-center gap-2"><i data-lucide="clock" class="size-3.5 shrink-0 text-signal-700" aria-hidden="true"></i>@evt.Time</li>
+                            <li class="flex items-center gap-2"><i data-lucide="users" class="size-3.5 shrink-0 text-signal-700" aria-hidden="true"></i>@evt.Capacity</li>
+                        </ul>
+                        @if (!isPast)
+                        {
+                            <a href="/join" class="inline-flex self-start rounded-full bg-signal-500 px-4 py-2 text-sm font-semibold text-ink-900 transition hover:-translate-y-0.5 hover:shadow-glow">
+                                Register<span class="sr-only"> for @evt.Title</span>
+                            </a>
+                        }
+                    </article>
+                </li>
+            }
+        </ul>
+    </div>
+</section>

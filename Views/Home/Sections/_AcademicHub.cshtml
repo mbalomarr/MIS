@@ -1,0 +1,39 @@
+<section id="academic-hub" aria-labelledby="academic-hub-title" class="bg-paper py-16 sm:py-24">
+    <div class="container-site">
+        <header class="mb-12 max-w-3xl lg:mb-16">
+            <p class="mb-3 text-sm font-medium tracking-[0.18em] text-signal-700 uppercase">The Academic Hub</p>
+            <h2 id="academic-hub-title" class="text-3xl sm:text-4xl lg:text-[2.5rem]">
+                A major for people who want to understand the business and build the system.
+            </h2>
+            <p class="mt-4 text-[1.0625rem] text-ink-400">
+                Management Information Systems sits exactly between two worlds. MIS students learn to translate messy
+                business problems into clean technical specifications — and then ship the solution.
+            </p>
+        </header>
+
+        <ul class="grid gap-6 md:grid-cols-3">
+            @foreach (var pillar in SiteContent.Pillars)
+            {
+                <li>
+                    <article class="group relative flex h-full flex-col overflow-hidden rounded-card border border-paper-200 bg-white p-6 shadow-hairline transition duration-300 hover:-translate-y-1 hover:shadow-lift">
+                        <span class="mb-5 grid size-12 place-items-center rounded-lg bg-signal-100 text-signal-700">
+                            <i data-lucide="@pillar.Icon" class="size-6" aria-hidden="true"></i>
+                        </span>
+                        <h3 class="mb-3 text-xl">@pillar.Title</h3>
+                        <p class="text-sm text-ink-400">@pillar.Description</p>
+                        @if (pillar.Tools.Count > 0)
+                        {
+                            <ul class="mt-5 flex flex-wrap gap-2" aria-label="Tools">
+                                @foreach (var tool in pillar.Tools)
+                                {
+                                    <li class="rounded-full border border-paper-200 bg-paper px-3 py-1 font-mono text-xs font-medium text-ink-700">@tool</li>
+                                }
+                            </ul>
+                        }
+                        <span class="absolute inset-x-0 bottom-0 h-[3px] origin-left scale-x-0 bg-gradient-to-r from-signal-500 to-transparent transition-transform duration-300 group-hover:scale-x-100" aria-hidden="true"></span>
+                    </article>
+                </li>
+            }
+        </ul>
+    </div>
+</section>

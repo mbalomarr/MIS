@@ -1,0 +1,114 @@
+@using PmuMisHub.Infrastructure
+@model RegistrationViewModel
+@{
+    ViewData["Title"] = "Join the Club";
+    ViewData["Description"] = "Register as a member of the MIS Club at Prince Mohammad Bin Fahd University. Free and open to every major.";
+}
+
+@* Page banner *@
+<header class="relative overflow-hidden bg-[radial-gradient(120%_140%_at_70%_0%,var(--color-ink-700)_0%,var(--color-ink-800)_50%,var(--color-ink-900)_100%)] pt-36 pb-16 text-paper lg:pt-44 lg:pb-20">
+    <div class="opacity-55"><partial name="_NetworkBackdrop" model="@("join")" /></div>
+    <div class="container-site relative">
+        <p class="mb-3 text-sm font-medium tracking-[0.18em] text-signal-300 uppercase">Join the MIS Club</p>
+        <h1 class="max-w-[22ch] text-3xl text-white sm:text-4xl lg:text-5xl">Membership is free. Bring your curiosity.</h1>
+        <p class="mt-4 max-w-[56ch] text-lg text-ink-300">
+            Register once and you're on the member list, in the group chat, and first in line for every workshop this semester.
+        </p>
+    </div>
+</header>
+
+<section aria-label="Registration" class="bg-paper py-16 sm:py-24">
+    <div class="container-site grid items-start gap-12 lg:grid-cols-[1fr_1.15fr] lg:gap-16">
+        @* Perks + contact *@
+        <div class="lg:sticky lg:top-28">
+            <h2 class="mb-6 text-2xl">What membership gets you</h2>
+            <ul class="mb-10 grid gap-4">
+                @foreach (var perk in SiteContent.JoinPerks)
+                {
+                    <li class="flex items-start gap-3 text-ink-600">
+                        <span class="mt-0.5 grid size-6 shrink-0 place-items-center rounded-full bg-signal-100 text-signal-700">
+                            <i data-lucide="check" class="size-3.5" aria-hidden="true"></i>
+                        </span>
+                        @perk
+                    </li>
+                }
+            </ul>
+            <address class="grid gap-3 border-t border-paper-200 pt-6 text-sm text-ink-400 not-italic">
+                <a href="mailto:@SiteContent.Email" class="inline-flex items-center gap-3 hover:text-signal-700">
+                    <i data-lucide="mail" class="size-[18px] shrink-0 text-signal-700" aria-hidden="true"></i>@SiteContent.Email
+                </a>
+                <span class="inline-flex items-center gap-3">
+                    <i data-lucide="map-pin" class="size-[18px] shrink-0 text-signal-700" aria-hidden="true"></i>@SiteContent.Location
+                </span>
+            </address>
+        </div>
+
+        @* Registration form *@
+        <form asp-action="Join" method="post" id="join-form" novalidate aria-labelledby="join-form-title"
+              class="relative rounded-panel bg-white p-6 shadow-float sm:p-10">
+            <h2 id="join-form-title" class="mb-6 border-b border-paper-200 pb-4 text-2xl">Member Registration</h2>
+
+            <div asp-validation-summary="ModelOnly" role="alert" class="mb-4 rounded-lg bg-danger/10 px-4 py-3 text-sm font-medium text-danger empty:hidden [&_ul]:list-none"></div>
+
+            <div class="grid gap-2">
+                <div>
+                    <label asp-for="FullName" class="@Ui.Label">Full name <span class="text-danger" aria-hidden="true">*</span></label>
+                    <input asp-for="FullName" class="@Ui.Control" autocomplete="name" placeholder="e.g. Mohammed Alomar" maxlength="120" aria-describedby="FullName-error" />
+                    <span asp-validation-for="FullName" id="FullName-error" class="@Ui.Error"></span>
+                </div>
+
+                <div class="grid gap-x-4 gap-y-2 sm:grid-cols-2">
+                    <div>
+                        <label asp-for="PmuId" class="@Ui.Label">PMU Student ID <span class="text-danger" aria-hidden="true">*</span></label>
+                        <input asp-for="PmuId" class="@Ui.Control" inputmode="numeric" autocomplete="off" placeholder="e.g. 202012345" maxlength="10" aria-describedby="PmuId-error" />
+                        <span asp-validation-for="PmuId" id="PmuId-error" class="@Ui.Error"></span>
+                    </div>
+                    <div>
+                        <label asp-for="Major" class="@Ui.Label">Major <span class="text-danger" aria-hidden="true">*</span></label>
+                        <div class="relative">
+                            <select asp-for="Major" asp-items="@(new SelectList(RegistrationViewModel.Majors))" class="@Ui.Control appearance-none pr-10" aria-describedby="Major-error">
+                                <option value="">Select your major</option>
+                            </select>
+                            <i data-lucide="chevron-down" class="pointer-events-none absolute top-1/2 right-3 size-[18px] -translate-y-1/2 text-ink-400" aria-hidden="true"></i>
+                        </div>
+                        <span asp-validation-for="Major" id="Major-error" class="@Ui.Error"></span>
+                    </div>
+                </div>
+
+                <div>
+                    <label asp-for="Email" class="@Ui.Label">PMU email <span class="text-danger" aria-hidden="true">*</span></label>
+                    <input asp-for="Email" type="email" class="@Ui.Control" autocomplete="email" placeholder="you@@pmu.edu.sa" maxlength="180" aria-describedby="Email-hint Email-error" />
+                    <p id="Email-hint" class="@Ui.Hint">Must end in @RegistrationViewModel.PmuEmailDomain</p>
+                    <span asp-validation-for="Email" id="Email-error" class="@Ui.Error"></span>
+                </div>
+
+                <div>
+                    <label asp-for="GithubHandle" class="@Ui.Label">GitHub username <span class="font-normal text-ink-400">(optional)</span></label>
+                    <input asp-for="GithubHandle" class="@Ui.Control" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="e.g. octocat" maxlength="40" aria-describedby="GithubHandle-hint GithubHandle-error" />
+                    <p id="GithubHandle-hint" class="@Ui.Hint">Lets us credit your work in the projects showcase.</p>
+                    <span asp-validation-for="GithubHandle" id="GithubHandle-error" class="@Ui.Error"></span>
+                </div>
+            </div>
+
+            @* Honeypot: off-screen for people, tempting for bots. *@
+            <div class="absolute -left-[9999px] size-px overflow-hidden" aria-hidden="true">
+                <label asp-for="Website">Leave this empty</label>
+                <input asp-for="Website" tabindex="-1" autocomplete="off" />
+            </div>
+
+            <button type="submit" id="join-submit"
+                    class="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-full bg-signal-500 px-8 py-4 font-semibold text-ink-900 transition duration-300 hover:-translate-y-0.5 hover:shadow-glow disabled:pointer-events-none disabled:opacity-75">
+                <svg class="hidden size-[18px] animate-spin" data-spinner viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="3" opacity="0.25" />
+                    <path d="M21 12a9 9 0 0 0-9-9" stroke="currentColor" stroke-width="3" stroke-linecap="round" />
+                </svg>
+                <span data-label>Submit Registration</span>
+            </button>
+            <p class="mt-4 text-xs text-ink-400">By registering you agree to receive club announcements at your PMU email.</p>
+        </form>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,32 @@
+<section id="hero" aria-labelledby="hero-title"
+         class="relative flex min-h-svh items-center overflow-hidden bg-[radial-gradient(120%_90%_at_70%_10%,var(--color-ink-700)_0%,var(--color-ink-800)_45%,var(--color-ink-900)_100%)] pt-36 pb-24 text-paper">
+    <partial name="_NetworkBackdrop" model="@("hero")" />
+
+    <div class="relative w-full">
+        <div class="container-site">
+            <p class="mb-6 inline-flex animate-fade-up items-center gap-2 rounded-full border border-signal-500/35 bg-signal-500/10 py-1.5 pr-3.5 pl-3 text-xs tracking-[0.14em] text-signal-300 uppercase">
+                <span class="size-2 animate-pulse-ring rounded-full bg-signal-500" aria-hidden="true"></span>
+                MIS Hub · @SiteContent.University
+            </p>
+
+            <h1 id="hero-title" class="max-w-[16ch] animate-fade-up text-4xl text-white [animation-delay:80ms] sm:text-5xl lg:text-[3.25rem] xl:text-6xl">
+                Where <span class="text-signal-500">business strategy</span> meets <span class="text-signal-500">building things</span>.
+            </h1>
+
+            <p class="mt-6 max-w-[58ch] animate-fade-up text-lg text-ink-300 [animation-delay:160ms] xl:text-xl">
+                The MIS Hub at @SiteContent.UniversityShort bridges the gap between management and innovative technology —
+                one home for the Management Information Systems major and the MIS Club, where students learn how
+                organisations work and build the systems that run them.
+            </p>
+
+            <div class="mt-10 flex animate-fade-up flex-wrap gap-3 [animation-delay:240ms]">
+                <a href="#academic-hub" class="inline-flex items-center justify-center gap-2 rounded-full bg-signal-500 px-8 py-4 font-semibold text-ink-900 transition duration-300 hover:-translate-y-0.5 hover:shadow-glow">
+                    Explore the Major
+                </a>
+                <a href="/join" class="inline-flex items-center justify-center gap-2 rounded-full border border-paper/35 px-8 py-4 font-semibold text-white transition duration-300 hover:-translate-y-0.5 hover:bg-paper/10">
+                    Join the Club
+                </a>
+            </div>
+        </div>
+    </div>
+</section>

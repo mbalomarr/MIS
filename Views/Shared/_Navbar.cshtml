@@ -1,0 +1,86 @@
+@{
+    var navItems = new (string Label, string Href)[]
+    {
+        ("Academic Hub", "/#academic-hub"),
+        ("MIS Club", "/#mis-club"),
+        ("Projects", "/#projects"),
+    };
+    var path = Context.Request.Path.Value ?? "/";
+}
+@*
+    Fixed header: transparent over the dark page banners, frosted paper once scrolled
+    or while the mobile menu is open. site.js toggles data-solid; children style
+    themselves with group-data-[solid=true]/header variants.
+*@
+<header id="site-header" data-solid="false"
+        class="group/header fixed inset-x-0 top-0 z-50 border-b border-transparent bg-transparent transition-[background-color,border-color,box-shadow] duration-300 ease-brand
+               data-[solid=true]:border-paper-200 data-[solid=true]:bg-paper/90 data-[solid=true]:shadow-hairline data-[solid=true]:backdrop-blur-md">
+    <div class="container-site">
+        <nav aria-label="Primary" class="flex h-[76px] items-center justify-between gap-6 lg:h-[84px]">
+            <a href="/" class="relative block w-40 shrink-0 lg:w-48">
+                <span class="sr-only">@SiteContent.Name — @SiteContent.University, home</span>
+                <img src="~/brand/logo-reversed.svg" alt="" width="200" height="70"
+                     class="h-auto w-full transition-opacity duration-300 group-data-[solid=true]/header:opacity-0" />
+                <img src="~/brand/logo.svg" alt="" width="200" height="70"
+                     class="absolute inset-0 h-auto w-full opacity-0 transition-opacity duration-300 group-data-[solid=true]/header:opacity-100" />
+            </a>
+
+            @* Desktop navigation *@
+            <ul class="hidden items-center gap-1 lg:flex">
+                @foreach (var (label, href) in navItems)
+                {
+                    <li>
+                        <a href="@href"
+                           class="rounded-lg px-3 py-2 text-sm font-medium text-paper transition-colors duration-300 hover:text-signal-300
+                                  group-data-[solid=true]/header:text-ink-800 group-data-[solid=true]/header:hover:text-signal-700">@label</a>
+                    </li>
+                }
+                <li class="ml-2">
+                    <a href="@SiteContent.GithubRepo" target="_blank" rel="noopener noreferrer"
+                       class="grid size-10 place-items-center rounded-full border border-paper/30 text-paper transition-colors duration-300 hover:border-signal-300 hover:text-signal-300
+                              group-data-[solid=true]/header:border-paper-200 group-data-[solid=true]/header:text-ink-800 group-data-[solid=true]/header:hover:border-ink-800">
+                        <partial name="_GitHubIcon" model="@("size-5")" />
+                        <span class="sr-only">GitHub repository (opens in a new tab)</span>
+                    </a>
+                </li>
+                <li class="ml-3">
+                    <a href="/join" aria-current="@(path == "/join" ? "page" : null)"
+                       class="inline-flex items-center rounded-full bg-signal-500 px-5 py-2.5 text-sm font-semibold text-ink-900 transition duration-300 hover:-translate-y-0.5 hover:shadow-glow">
+                        Join Us
+                    </a>
+                </li>
+            </ul>
+
+            @* Mobile toggle *@
+            <button type="button" id="menu-toggle" aria-expanded="false" aria-controls="mobile-menu"
+                    class="grid size-11 place-items-center rounded-lg border border-paper/30 text-paper lg:hidden
+                           group-data-[solid=true]/header:border-paper-200 group-data-[solid=true]/header:text-ink-800">
+                <i data-lucide="menu" class="size-5" data-menu-icon="open" aria-hidden="true"></i>
+                <i data-lucide="x" class="hidden size-5" data-menu-icon="close" aria-hidden="true"></i>
+                <span class="sr-only" data-menu-label>Open menu</span>
+            </button>
+        </nav>
+    </div>
+
+    @* Mobile menu panel *@
+    <div id="mobile-menu" hidden
+         class="fixed inset-x-0 top-[76px] max-h-[calc(100svh-76px)] overflow-y-auto border-b border-paper-200 bg-paper p-6 shadow-lift lg:hidden">
+        <ul class="grid gap-1">
+            @foreach (var (label, href) in navItems)
+            {
+                <li><a href="@href" data-menu-link class="block rounded-lg px-2 py-3 text-lg font-medium text-ink-800 hover:text-signal-700">@label</a></li>
+            }
+            <li>
+                <a href="@SiteContent.GithubRepo" target="_blank" rel="noopener noreferrer" data-menu-link
+                   class="flex items-center gap-2 rounded-lg px-2 py-3 text-lg font-medium text-ink-800 hover:text-signal-700">
+                    <partial name="_GitHubIcon" model="@("size-5")" />
+                    GitHub <span class="sr-only">(opens in a new tab)</span>
+                </a>
+            </li>
+        </ul>
+        <a href="/join" data-menu-link
+           class="mt-4 flex w-full items-center justify-center rounded-full bg-signal-500 px-6 py-3 font-semibold text-ink-900 transition hover:shadow-glow">
+            Join Us
+        </a>
+    </div>
+</header>

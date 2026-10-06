@@ -1,0 +1,88 @@
+@using System.Globalization
+@model IdCardViewModel
+@{
+    ViewData["Title"] = "Digital ID";
+    ViewData["Description"] = "MIS Club digital membership card.";
+}
+@section Head {
+    <meta name="robots" content="noindex, nofollow" />
+}
+
+<section aria-labelledby="id-title" class="relative overflow-hidden bg-[radial-gradient(120%_140%_at_70%_0%,var(--color-ink-700)_0%,var(--color-ink-800)_50%,var(--color-ink-900)_100%)] pt-36 pb-20 text-paper lg:pt-40">
+    <div class="opacity-55"><partial name="_NetworkBackdrop" model="@("id-card")" /></div>
+
+    <div class="container-site relative grid items-center gap-12 lg:grid-cols-[1fr_auto]">
+        <div>
+            @if (Model.JustRegistered)
+            {
+                <p role="status" class="mb-6 inline-flex items-center gap-2 rounded-full border border-success/40 bg-success/15 px-4 py-2 text-sm font-semibold text-[#4fd1a0]">
+                    <i data-lucide="circle-check" class="size-[18px]" aria-hidden="true"></i>
+                    Welcome to the MIS Hub! Your Digital ID is ready.
+                </p>
+            }
+            <p class="mb-3 text-sm font-medium tracking-[0.18em] text-signal-300 uppercase">MIS Club · Digital ID</p>
+            <h1 id="id-title" class="max-w-[20ch] text-3xl text-white sm:text-4xl lg:text-5xl">Your membership, in your pocket.</h1>
+            <p class="mt-4 max-w-[52ch] text-lg text-ink-300">
+                Show the QR code at the door of any club event to check in. Bookmark this page — and keep the link private,
+                since your QR code is your check-in pass.
+            </p>
+            <div class="mt-8 flex flex-wrap gap-3">
+                <button type="button" onclick="window.print()"
+                        class="inline-flex items-center gap-2 rounded-full bg-signal-500 px-6 py-3 text-sm font-semibold text-ink-900 transition hover:-translate-y-0.5 hover:shadow-glow">
+                    <i data-lucide="printer" class="size-[18px]" aria-hidden="true"></i> Print or save as PDF
+                </button>
+                <a href="/" class="inline-flex items-center gap-2 rounded-full border border-paper/35 px-6 py-3 text-sm font-semibold text-white transition hover:bg-paper/10">
+                    Back to the hub
+                </a>
+            </div>
+        </div>
+
+        @* The card — ISO ID-1 proportions (85.6 × 54 mm) *@
+        <figure aria-label="Membership card for @Model.FullName"
+                class="relative m-0 grid aspect-[85.6/54] w-full max-w-[460px] grid-cols-[1fr_auto] gap-5 overflow-hidden rounded-panel bg-[radial-gradient(120%_120%_at_100%_0%,rgb(47_184_198/0.35),transparent_55%),linear-gradient(145deg,var(--color-ink-700),var(--color-ink-900))] p-6 shadow-float ring-1 ring-paper/10 print:shadow-none">
+            <div class="flex min-w-0 flex-col">
+                <img src="~/brand/logo-reversed.svg" alt="" width="140" height="49" class="h-auto w-28" />
+                <div class="mt-auto">
+                    <p class="truncate text-xl font-bold text-white">@Model.FullName</p>
+                    <dl class="mt-2 grid gap-1 text-xs">
+                        <div class="flex gap-2"><dt class="tracking-[0.14em] text-signal-300 uppercase">ID</dt><dd class="font-mono text-paper">@Model.PmuId</dd></div>
+                        <div class="flex gap-2"><dt class="tracking-[0.14em] text-signal-300 uppercase">Major</dt><dd class="truncate text-paper">@Model.Major</dd></div>
+                        <div class="flex gap-2"><dt class="tracking-[0.14em] text-signal-300 uppercase">Since</dt><dd class="font-mono text-paper">@Model.MemberSince.ToString("MMM yyyy", CultureInfo.InvariantCulture)</dd></div>
+                    </dl>
+                </div>
+            </div>
+            <div class="flex flex-col items-center justify-between">
+                <span class="rounded-full bg-signal-500 px-2.5 py-0.5 text-[10px] font-bold tracking-[0.12em] text-ink-900 uppercase">Member</span>
+                <div id="member-qr" data-qr="@Model.QrCodeHash" role="img" aria-label="Check-in QR code"
+                     class="rounded-lg bg-white p-2 [&_img]:size-[104px] [&_canvas]:size-[104px]"></div>
+            </div>
+            <figcaption class="col-span-2 flex justify-between text-[10px] tracking-[0.12em] text-ink-300 uppercase">
+                <span>@SiteContent.University</span>
+                @if (!string.IsNullOrEmpty(Model.GithubHandle))
+                {
+                    <span class="normal-case tracking-normal">github.com/@Model.GithubHandle</span>
+                }
+            </figcaption>
+        </figure>
+    </div>
+</section>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"
+            integrity="sha384-3zSEDfvllQohrq0PHL1fOXJuC/jSOO34H46t6UQfobFOmxE5BpjjaIJY5F2/bMnU"
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+        (function () {
+            var target = document.getElementById("member-qr");
+            if (!target || typeof QRCode === "undefined") return;
+            new QRCode(target, {
+                text: target.dataset.qr,
+                width: 208,
+                height: 208,
+                colorDark: "#0F1E33",
+                colorLight: "#FFFFFF",
+                correctLevel: QRCode.CorrectLevel.M
+            });
+        })();
+    </script>
+}

@@ -1,0 +1,26 @@
+@model ErrorViewModel
+@{
+    ViewData["Title"] = "Something went wrong";
+    var statusCode = Context.Features.Get<Microsoft.AspNetCore.Diagnostics.IStatusCodeReExecuteFeature>() is not null
+        ? Context.Response.StatusCode
+        : 500;
+    var isNotFound = statusCode == 404;
+}
+<section class="bg-[radial-gradient(120%_140%_at_70%_0%,var(--color-ink-700)_0%,var(--color-ink-800)_50%,var(--color-ink-900)_100%)] pt-40 pb-24 text-paper">
+    <div class="container-site">
+        <p class="mb-3 text-sm font-medium tracking-[0.18em] text-signal-300 uppercase">@statusCode</p>
+        <h1 class="max-w-[22ch] text-3xl text-white sm:text-4xl lg:text-5xl">
+            @(isNotFound ? "This page doesn't exist." : "Something went wrong on our side.")
+        </h1>
+        <p class="mt-4 max-w-[56ch] text-lg text-ink-300">
+            @(isNotFound ? "Check the address, or head back to the hub." : "Please try again in a moment.")
+        </p>
+        @if (!isNotFound && Model?.ShowRequestId == true)
+        {
+            <p class="mt-4 font-mono text-xs text-ink-400">Request ID: @Model.RequestId</p>
+        }
+        <a href="/" class="mt-8 inline-flex items-center rounded-full bg-signal-500 px-6 py-3 text-sm font-semibold text-ink-900 transition hover:-translate-y-0.5 hover:shadow-glow">
+            Back to the hub
+        </a>
+    </div>
+</section>

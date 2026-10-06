@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="@(ViewData["Description"] ?? SiteContent.Description)" />
+    <meta name="theme-color" content="#0F1E33" />
+    <title>@(ViewData["Title"] is string title ? $"{title} — {SiteContent.Name}" : $"{SiteContent.Name} — Management Information Systems at PMU")</title>
+    @await RenderSectionAsync("Head", required: false)
+
+    <link rel="icon" type="image/svg+xml" href="~/favicon.svg" asp-append-version="true" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+    <script src="https://cdn.jsdelivr.net/npm/@@tailwindcss/browser@4.3.3/dist/index.global.js"
+            integrity="sha384-2ql948lIdLcGEE0/qxNiudyTjgauA3RDJERu5xW75kFCvSl5a9odyQYCb6tEjnmB"
+            crossorigin="anonymous"></script>
+
+    @* Brand theme — colours, font, radii, shadows and animations from the original MIS_Website/css/style.css. *@
+    <style type="text/tailwindcss">
+        @@theme {
+            --color-ink-900: #08131f;
+            --color-ink-800: #0f1e33;
+            --color-ink-700: #1b2e48;
+            --color-ink-600: #2a405e;
+            --color-ink-400: #5c7089;
+            --color-ink-300: #8b9cb0;
+            --color-signal-700: #1e8d99;
+            --color-signal-500: #2fb8c6;
+            --color-signal-300: #7fd7e0;
+            --color-signal-100: #dff4f6;
+            --color-paper: #f2f6f8;
+            --color-paper-200: #e4ebf0;
+            --color-danger: #d64545;
+            --color-success: #1e9e6a;
+
+            --font-sans: "Space Grotesk", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+
+            --radius-card: 14px;
+            --radius-panel: 22px;
+            --shadow-hairline: 0 1px 2px rgb(15 30 51 / 0.06);
+            --shadow-lift: 0 8px 24px rgb(15 30 51 / 0.08);
+            --shadow-float: 0 20px 50px rgb(15 30 51 / 0.14);
+            --shadow-glow: 0 10px 24px rgb(47 184 198 / 0.32);
+            --ease-brand: cubic-bezier(0.4, 0, 0.2, 1);
+
+            --animate-pulse-ring: pulse-ring 2.4s infinite;
+            --animate-node-glow: node-glow 4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+            --animate-fade-up: fade-up 0.6s cubic-bezier(0.4, 0, 0.2, 1) both;
+
+            @@keyframes pulse-ring {
+                0% { box-shadow: 0 0 0 0 rgb(47 184 198 / 0.6); }
+                70%, 100% { box-shadow: 0 0 0 10px rgb(47 184 198 / 0); }
+            }
+            @@keyframes node-glow {
+                0%, 100% { opacity: 0.35; }
+                50% { opacity: 1; }
+            }
+            @@keyframes fade-up {
+                from { opacity: 0; transform: translateY(18px); }
+                to { opacity: 1; transform: none; }
+            }
+        }
+
+        @@utility container-site {
+            width: 100%;
+            max-width: 1180px;
+            margin-inline: auto;
+            padding-inline: 1.5rem;
+        }
+
+        @@layer base {
+            html { scroll-behavior: smooth; scroll-padding-top: 96px; }
+            body { @@apply bg-paper font-sans text-ink-800 antialiased; line-height: 1.65; }
+            h1, h2, h3, h4 { @@apply font-bold text-balance; line-height: 1.15; letter-spacing: -0.02em; }
+            ::selection { @@apply bg-signal-500 text-ink-900; }
+            :focus-visible { @@apply rounded-lg outline-3 outline-offset-3 outline-signal-500; }
+            @@media (prefers-reduced-motion: reduce) {
+                html { scroll-behavior: auto; }
+                *, *::before, *::after { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+            }
+        }
+    </style>
+</head>
+<body id="top" class="flex min-h-svh flex-col">
+    <a href="#main" class="sr-only rounded-br-lg bg-signal-500 px-5 py-3 font-semibold text-ink-900 focus:not-sr-only focus:fixed focus:top-0 focus:left-0 focus:z-[100]">
+        Skip to main content
+    </a>
+
+    <partial name="_Navbar" />
+
+    <main id="main" class="flex-1">
+        @RenderBody()
+    </main>
+
+    <partial name="_Footer" />
+
+    <script src="https://unpkg.com/lucide@1.52.0/dist/umd/lucide.min.js"
+            integrity="sha384-SSRIJfpvnhji4rCcULgpNXRJjQ9P/odU9OaWxSumsZiokvJ7zAu4PGQVWyWxTG3u"
+            crossorigin="anonymous"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
